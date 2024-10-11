@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Algorithms Visualization</title>
+    <style>
+        #network {
+            width: 800px;
+            height: 600px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="network"></div>
+
+    <div id="inputform">
+        <div class="edge">
+            <input type="text" name="source1">
+            <input type="number" name="h1"></br>
+            <input type="text" name="source2">
+            <input type="number" name="h2"></br>
+            <input type="number" name="weight">
+        </div>
+    </div>  
+    <button onclick="drawNetwork()" id="submit">Submit</button>
+
+</body>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="vis-framework.js"></script>
+
+</html>

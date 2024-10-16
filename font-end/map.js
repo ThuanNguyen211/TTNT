@@ -57,7 +57,7 @@ const options = {
 
 const network = new vis.Network(container, data, options);
 
-function drawNetwork(){
+function draw(){
 
     const inputForm = document.getElementById('inputform');
     const edges_input = inputForm.getElementsByClassName('edge');
@@ -72,17 +72,38 @@ function drawNetwork(){
         const h2 = edge.querySelector('input[name="h2"]').value;
         const weight = edge.querySelector('input[name="weight"]').value;
 
-        console.log(nodes.length);
-        let id = 1;
-        if(nodes.length > 0)
-            id = nodes.get(nodes.length) + 1;
+        const node1 = getNode(source1, h1);
+        const node2 = getNode(source2, h2);
 
-        const node1 = {id: id++, label: `${source1}\n${h1}`, h: h1};
-        const node2 = {id: id, label: `${source2}\n${h2}`, h: h2};
+        addEdge(node1, node2, weight);
+    }
+    
+    return {nodelist: nodes, edgelist: edges};
 
-        nodes.add(node1);
-        nodes.add(node2);
-        edges.add({from: node1.id, to: node2.id, label: weight});
+}
+
+function getNode(name, h){
+
+    for(var i = 1; i <= nodes.length; i++){
+        if(nodes.get(i).name == name)
+            return nodes.get(i);
     }
 
+    const newNode = {id: nodes.length + 1, label: `${name}\n${h}`, name: name, h: h};
+    nodes.add(newNode);
+
+    return newNode;
+}
+
+function addEdge(node1, node2, g){
+
+    for(var i = 1; i <= edges.length; i++){
+        if(nodes.get(i).from == node1.id && nodes.get(i).to == node2.id)
+            return;
+        if(nodes.get(i).from == node2.id && nodes.get(i).to == node1.id)
+            return;
+    }
+
+    const newEdge = {from: node1.id, to: node2.id, label: g, id: edges.length + 1};
+    edges.add(newEdge);
 }

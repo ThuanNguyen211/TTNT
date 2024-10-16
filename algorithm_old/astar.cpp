@@ -78,7 +78,7 @@ typedef struct Node {
 
 // Lấy chỉ số heuristic của một điểm
 int get_heuristic(char point, Map map){
-	for(int i = 0; i < map.point_list.size(); i++){
+	for(size_t i = 0; i < map.point_list.size(); i++){
 		if(point == map.point_list.at(i))
 			return map.h_list.at(i);
 	}
@@ -87,7 +87,7 @@ int get_heuristic(char point, Map map){
 
 // Lấy chi phí của một đường đi
 int get_cost(int ut, int vt, Map map){
-	for(int i = 0; i < map.edge_list.size(); i++){
+	for(size_t i = 0; i < map.edge_list.size(); i++){
 		int u = map.edge_list.at(i).u;
 		int v = map.edge_list.at(i).v;
 		if(ut == u && vt == v || ut == v && vt == u)
@@ -99,7 +99,7 @@ int get_cost(int ut, int vt, Map map){
 // Lấy các điểm láng giềng - có đường đi tới điểm đang xét
 vector<char> get_neighbors(char point, Map map){
 	vector<char> neighbors;
-	for(int i = 0; i < map.edge_list.size(); i++){
+	for(size_t i = 0; i < map.edge_list.size(); i++){
 		char u = map.edge_list.at(i).u;
 		char v = map.edge_list.at(i).v;
 		if(point == u) neighbors.push_back(v);
@@ -168,7 +168,7 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 
 		// Lấy danh sách và duyệt qua các láng giềng
 		vector<char> neighbors = get_neighbors(node->point, map);
-		for(int v = 0; v < neighbors.size(); v++){
+		for(size_t v = 0; v < neighbors.size(); v++){
 
 			// Tạo node mới với từng láng giềng
 			Node* newNode = (Node*)malloc(sizeof(Node));
@@ -254,7 +254,7 @@ int main(){
 	
 	// Hiển thị thứ tự duyệt
 	printf("Traversing Order: ");
-	for(int i = 0; i < traversing_order.size() - 1; i++){
+	for(size_t i = 0; i < traversing_order.size() - 1; i++){
 		printf("%c -> ", traversing_order.at(i));
 	}
 	printf("%c", traversing_order.back());

@@ -23,12 +23,30 @@
             <input type="number" name="h2"></br>
             <input type="number" name="weight">
         </div>
+        <div class="edge">
+            <input type="text" name="source1">
+            <input type="number" name="h1"></br>
+            <input type="text" name="source2">
+            <input type="number" name="h2"></br>
+            <input type="number" name="weight">
+        </div>
     </div>  
     <button onclick="drawNetwork()" id="submit">Submit</button>
+    <button onclick="runAlgorithm()">RUN</button>
 
 </body>
 
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-<script src="vis-framework.js"></script>
+<script src="map.js"></script>
+<script src="struct_framework.js"></script>
+<script>
+    function drawNetwork(){
+        const map = draw();
+        nodes = map['nodelist'];
+        edges = map['edgelist'];
+        console.log(nodes);
+        console.log(edges);
+    }
+</script>
 
 </html>

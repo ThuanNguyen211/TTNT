@@ -80,43 +80,35 @@ registerStruct("outputStruct", {
     "traversalOrder": "int*"
 });
 
-function runAlgorithm(nodes, edges){
+function run(nodes, edges){
 
-    var node_arr;
-    var h_arr;
-    var u_arr;
-    var v_arr;
-    var g_arr;
+    if(nodes == {}){
+        console.log('empty');
+        return null;
+    }
+
+    var node_arr = [];
+    var h_arr = [];
+    var u_arr = [];
+    var v_arr = [];
+    var g_arr = [];
     var start;
     var goal;
-    for(var i = 0; i < nodes.length; i++){
-        node_arr.push(nodes.get(i + 1).id);
-        h_arr.push(nodes.get(i + 1).h);
+    for(var i = 1; i <= nodes.length; i++){
+        node_arr.push(nodes.get(i).id);
+        h_arr.push(nodes.get(i).h);
     }
 
-    for(var i = 0; i < edges.length; i++){
-        u_arr.push(edges.get(i + 1).from);
-        v_arr.push(edges.get(i + 1).to);
-        g_arr.push(edges.get(i + 1).label);
+    for(var i = 1; i <= edges.length; i++){
+        u_arr.push(edges.get(i).from);
+        v_arr.push(edges.get(i).to);
+        g_arr.push(edges.get(i).label);
     }
+
+    start = 1;
+    goal = node_arr.length;
 
     console.log(node_arr);
-
-    // var node_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    // var h_arr = [366, 374, 329, 244, 253, 178, 193, 98, 0];
-    // var u_arr = [1, 1, 1, 3, 5, 5, 6, 7, 8];
-    // var v_arr = [2, 3, 5, 4, 6, 7, 9, 8, 9];
-    // var g_arr = [75, 118, 140, 111, 99, 80, 211, 97, 101];
-    // var start = 1;
-    // var goal = 9;
-
-    // const node_arr = [1, 2, 3, 4];
-    // const h_arr = [100, 200, 300, 400];
-    // const u_arr = [1, 2, 3];
-    // const v_arr = [2, 3, 4];
-    // const g_arr = [10, 20, 30];
-    // const start = 1;
-    // const goal = 4;
 
     const node_ptr = encodeArray(node_arr, node_arr.length);
     const h_ptr = encodeArray(h_arr, h_arr.length);

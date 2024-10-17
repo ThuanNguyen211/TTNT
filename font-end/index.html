@@ -40,12 +40,15 @@
 <script src="map.js"></script>
 <script src="struct_framework.js"></script>
 <script>
+
     function drawNetwork(){
         const map = draw();
-        nodes = map['nodelist'];
-        edges = map['edgelist'];
-        console.log(nodes);
-        console.log(edges);
+    }
+
+    function runAlgorithm(){
+        const output = run(nodes, edges);
+        console.log(output);
+        
     }
 </script>
 

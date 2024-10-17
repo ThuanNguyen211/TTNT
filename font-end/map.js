@@ -98,9 +98,9 @@ function getNode(name, h){
 function addEdge(node1, node2, g){
 
     for(var i = 1; i <= edges.length; i++){
-        if(nodes.get(i).from == node1.id && nodes.get(i).to == node2.id)
+        if(edges.get(i).from == node1.id && edges.get(i).to == node2.id)
             return;
-        if(nodes.get(i).from == node2.id && nodes.get(i).to == node1.id)
+        if(edges.get(i).from == node2.id && edges.get(i).to == node1.id)
             return;
     }
 

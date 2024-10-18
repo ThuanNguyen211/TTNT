@@ -82,9 +82,9 @@ registerStruct("outputStruct", {
 
 function run(nodes, edges){
 
-    if(nodes == {}){
-        console.log('empty');
-        return null;
+    if(nodes.length == 0 || edges.length == 0){
+        alert('Vui lòng nhập bản đồ');
+        return;
     }
 
     var node_arr = [];
@@ -92,8 +92,8 @@ function run(nodes, edges){
     var u_arr = [];
     var v_arr = [];
     var g_arr = [];
-    var start;
-    var goal;
+
+    var start, goal;
     for(var i = 1; i <= nodes.length; i++){
         node_arr.push(nodes.get(i).id);
         h_arr.push(nodes.get(i).h);
@@ -123,7 +123,6 @@ function run(nodes, edges){
     );
 
     const res = startDecodeStruct('outputStruct', res_ptr, memory);
-    console.log('RES', res);
 
     exports.wasmfree(node_ptr);
     exports.wasmfree(h_ptr);
@@ -131,4 +130,6 @@ function run(nodes, edges){
     exports.wasmfree(v_ptr);
     exports.wasmfree(g_ptr);
     exports.wasmfree(res_ptr);
+
+    return res;
 }

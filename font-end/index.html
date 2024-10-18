@@ -9,6 +9,15 @@
             height: 600px;
             border: 1px solid lightgray;
         }
+
+        #inputform input{
+            width: 50px;
+        }
+
+        #inputform #node1, #node2 {
+            display: inline-block;
+        }
+
     </style>
 </head>
 <body>
@@ -17,22 +26,23 @@
 
     <div id="inputform">
         <div class="edge">
-            <input type="text" name="source1">
-            <input type="number" name="h1"></br>
-            <input type="text" name="source2">
-            <input type="number" name="h2"></br>
-            <input type="number" name="weight">
+            <div id="node1">
+                <input class="node" type="text" name="source1" placeholder="node1">
+                <input class="h" type="number" name="h1" placeholder="h1">
+            </div>
+            <input type="number" name="weight" placeholder="w">
+            <div id="node2">
+                <input class="node" type="text" name="source2" placeholder="node2">
+                <input class="h" type="number" name="h2" placeholder="h2">
+            </div>
         </div>
-        <div class="edge">
-            <input type="text" name="source1">
-            <input type="number" name="h1"></br>
-            <input type="text" name="source2">
-            <input type="number" name="h2"></br>
-            <input type="number" name="weight">
-        </div>
-    </div>  
+    </div>
+    <button onclick="addEdgeInput()">+</button></br>
     <button onclick="drawNetwork()" id="submit">Submit</button>
     <button onclick="runAlgorithm()">RUN</button>
+    <div id="res">
+
+    </div>
 
 </body>
 
@@ -41,6 +51,31 @@
 <script src="struct_framework.js"></script>
 <script>
 
+    function addEdgeInput() {
+        const inputs = document.querySelectorAll('#inputform input');
+        const values = Array.from(inputs).map(input => input.value);
+
+        const inputform = document.querySelector('#inputform');
+        inputform.innerHTML += `
+            <div class="edge">
+                <div id="node1">
+                    <input class="node" type="text" name="source1" placeholder="node1">
+                    <input class="h" type="number" name="h1" placeholder="h1">
+                </div>
+                <input type="number" name="weight" placeholder="w">
+                <div id="node2">
+                    <input class="node" type="text" name="source2" placeholder="node2">
+                    <input class="h" type="number" name="h2" placeholder="h2">
+                </div>
+            </div>
+        `;
+
+        const newInputs = document.querySelectorAll('#inputform input');
+        values.forEach((value, index) => {
+            newInputs[index].value = value;
+        });
+    }
+
     function drawNetwork(){
         const map = draw();
     }
@@ -48,7 +83,14 @@
     function runAlgorithm(){
         const output = run(nodes, edges);
         console.log(output);
-        
+
+        const path = output.pathToGoal;
+        const resContainer = document.querySelector('#res');
+        for (var i = 0; i < path.length; i++){
+            if (i != 0) resContainer.textContent += ' => ';
+            resContainer.textContent += path[i];
+        }
+
     }
 </script>
 

@@ -1,0 +1,13 @@
+#network {
+    width: 800px;
+    height: 600px;
+    border: 1px solid lightgray;
+}
+
+#inputform input{
+    width: 50px;
+}
+
+#inputform #node1, #node2 {
+    display: inline-block;
+}

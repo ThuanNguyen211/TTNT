@@ -80,7 +80,7 @@ registerStruct("outputStruct", {
     "traversalOrder": "int*"
 });
 
-function run(nodes, edges, algorithm){
+function run(nodes, edges, algorithm, start, goal){
 
     if(nodes.length == 0 || edges.length == 0){
         alert('Vui lòng nhập bản đồ');
@@ -93,7 +93,6 @@ function run(nodes, edges, algorithm){
     var v_arr = [];
     var g_arr = [];
 
-    var start, goal;
     for(var i = 1; i <= nodes.length; i++){
         node_arr.push(nodes.get(i).id);
         h_arr.push(nodes.get(i).h);
@@ -105,11 +104,6 @@ function run(nodes, edges, algorithm){
         g_arr.push(edges.get(i).label);
     }
 
-    start = 1;
-    goal = node_arr.length;
-
-    console.log(node_arr);
-
     const node_ptr = encodeArray(node_arr, node_arr.length);
     const h_ptr = encodeArray(h_arr, h_arr.length);
     const u_ptr = encodeArray(u_arr, u_arr.length)
@@ -118,7 +112,7 @@ function run(nodes, edges, algorithm){
 
     const res_ptr = exports.AStarAlgorithm(
         node_ptr, h_ptr, node_arr.length,
-        u_ptr, v_ptr, g_ptr, u_arr.length,
+        u_ptr, v_ptr, g_ptr, u_arr.length, 
         start, goal
     );
 

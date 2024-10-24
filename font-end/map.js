@@ -10,10 +10,6 @@ const options = {
         color: {
             border: '#2B7CE9', // Border color of the node
             background: '#97C2FC', // Background color of the node
-            highlight: {
-                border: '#2B7CE9',
-                background: '#D2E5FF'
-            },
             hover: {
                 border: '#2B7CE9',
                 background: '#D2E5FF'
@@ -34,7 +30,6 @@ const options = {
         font: { color: '#000000', size: 18, align: 'horizontal' },
         color: {
             color: '#848484',  // Edge color
-            highlight: '#848484',
             hover: '#848484'
         },
         width: 2              // Edge thicknes
@@ -73,8 +68,6 @@ function draw(){
         const source2 = edge.querySelector('input[name="node2"]').value;
         const h2 = edge.querySelector('input[name="h2"]').value;
         const weight = edge.querySelector('input[name="weight"]').value;
-
-        console.log(source1);
 
         if([source1, h1, source2, h2, weight].includes(''))
             continue;

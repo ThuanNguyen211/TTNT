@@ -66,9 +66,9 @@ function draw(){
         const edge = edges_input[i];
 
         // Lấy các giá trị input trong phần tử con 'edge'
-        const source1 = edge.querySelector('input[name="source1"]').value;
+        const source1 = edge.querySelector('input[name="node1"]').value;
         const h1 = edge.querySelector('input[name="h1"]').value;
-        const source2 = edge.querySelector('input[name="source2"]').value;
+        const source2 = edge.querySelector('input[name="node2"]').value;
         const h2 = edge.querySelector('input[name="h2"]').value;
         const weight = edge.querySelector('input[name="weight"]').value;
 

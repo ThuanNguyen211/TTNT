@@ -4,10 +4,15 @@
     border: 1px solid lightgray;
 }
 
+#inputform {
+    margin-top: 100px;
+}
+
 #inputform input{
     width: 50px;
 }
 
-#inputform #node1, #node2 {
+#inputform .node {
     display: inline-block;
+    margin-bottom: 10px;
 }

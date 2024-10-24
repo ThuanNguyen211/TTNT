@@ -47,7 +47,9 @@ const options = {
     interaction: {
         hover: true,           // Enable hover effect on nodes
         dragNodes: true,       // Allow nodes to be dragged
-        zoomView: true         // Enable zooming with mouse wheel
+        zoomView: true,        // Enable zooming with mouse wheel
+        dragView: false, // Ngăn kéo nền
+        zoomView: false  // Ngăn phóng to/thu nhỏ
     },
     layout: {
         randomSeed: 2,         // Seed for layout randomness (helps keep consistent layout)
@@ -71,6 +73,11 @@ function draw(){
         const source2 = edge.querySelector('input[name="node2"]').value;
         const h2 = edge.querySelector('input[name="h2"]').value;
         const weight = edge.querySelector('input[name="weight"]').value;
+
+        console.log(source1);
+
+        if([source1, h1, source2, h2, weight].includes(''))
+            continue;
 
         const node1 = getNode(source1, h1);
         const node2 = getNode(source2, h2);

@@ -80,7 +80,7 @@ registerStruct("outputStruct", {
     "traversalOrder": "int*"
 });
 
-function run(nodes, edges){
+function run(nodes, edges, algorithm){
 
     if(nodes.length == 0 || edges.length == 0){
         alert('Vui lòng nhập bản đồ');

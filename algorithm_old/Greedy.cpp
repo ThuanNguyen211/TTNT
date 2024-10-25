@@ -125,12 +125,12 @@ Node* find_point_in_list(char point, vector<Node*> list, vector<Node*>::iterator
 }
 
 // Hàm so sánh -> nhằm mục đích cung cấp cho hàm sort()
-bool compare_f(Node* a, Node* b){
-	return a->g + a->h > b->g + b->h;
+bool compare_h(Node* a, Node* b) { 
+    return a->h > b->h;  
 }
 
-// Giải thuật A-Star
-Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_order){
+// Giải thuật Greedy
+Node* GreedyAlgorithm(Map map, char start, char goal, vector<char> *traversing_order) { 
 
 	// Khai báo 2 danh sách open và close
 	vector<Node*> openList;
@@ -153,14 +153,15 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 
 	// Lặp khi open list còn phần tử
 	while(!openList.empty()){
-
-		// Lấy node cuối cùng trong open (open được sắp xếp giảm dần theo f = g + h)
+        // Sắp xếp openList chỉ theo h
+        sort(openList.begin(), openList.end(), compare_h);
+		// Lấy node cuối cùng trong open 
 		Node* node = openList.back();
 		// Xóa node này ra khỏi open và đưa vào close
 		openList.pop_back();
 		closeList.push_back(node);
 
-		// Thêm node đàn xét vào danh sách lưu thứ tự duyệt
+		// Thêm node đang xét vào danh sách lưu thứ tự duyệt
 		traversing_order->push_back(node->point);
 
 		// Kiểm tra: nếu node đang xét chứa điểm goal -> tìm được lời giải
@@ -177,40 +178,21 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 			newNode->h = get_heuristic(newNode->point, map);
 			newNode->g = newNode->parent->g + get_cost(newNode->parent->point, newNode->point, map);
 
-			if(newNode->h == -1) {
-				printf("Hueristic of new node is -1");
-				return NULL;
-			}
 
-			if(newNode->g == -1) {
-				printf("Cost of new node is -1");
-				return NULL;
-			}
+			// Kiểm tra sự hiện diện của láng giềng trong close
+			vector<Node*>::iterator pos;
+            if (find_point_in_list(newNode->point, closeList, &pos) != NULL) {
+                free(newNode);
+                continue;
+            }
 
-			// Kiểm tra sự hiện diện của láng giềng trong open và close
-			vector<Node*>::iterator posOpen, posClose; // Chứa vị trí nếu tìm được
-			Node* nodeFoundOpen = find_point_in_list(newNode->point, openList, &posOpen);
-			Node* nodeFoundClose = find_point_in_list(newNode->point, closeList, &posClose);
-
-			// Nếu chưa có trong cả 2 danh sách => thêm vào open
-			if(nodeFoundOpen == NULL && nodeFoundClose == NULL){
-				openList.push_back(newNode);
-			}
-
-			// Nếu đã có trong open và chi phí tệ hơn -> xóa node tìm thấy và thêm node hiện tại vào open
-			else if(nodeFoundOpen != NULL && nodeFoundOpen->g > newNode->g){
-				openList.erase(posOpen);
-				openList.push_back(newNode);
-			}
-
-			// Nếu đã có trong close và chi phí tệ hơn -> xóa node tìm thấy và thêm node hiện tại vào open
-			else if(nodeFoundClose != NULL && nodeFoundClose->g > newNode->g){
-				closeList.erase(posClose);
-				openList.push_back(newNode);
-			} 
-
-			// Sắp xếp lại open theo chiều giảm dần
-			sort(openList.begin(), openList.end(), compare_f);
+            // Kiểm tra sự hiện diện của láng giềng trong open
+            Node* found = find_point_in_list(newNode->point, openList, &pos);
+            if (found == NULL) {
+                openList.push_back(newNode);
+            } else {
+                free(newNode);
+            }
 		}
 	}
 
@@ -250,7 +232,7 @@ int main(){
 	vector<char> traversing_order;
 
 	// Thực hiện giải thuật
-	Node* node = AStarAlgorithm(map, start, goal, &traversing_order);
+    Node* node = GreedyAlgorithm(map, start, goal, &traversing_order);  
 	
 	// Hiển thị thứ tự duyệt
 	printf("Traversing Order: ");

@@ -83,12 +83,12 @@ void initMap(Map* map) {
     initEdgeList(&map->edge_list);
 }
 
-Map createMapWithInput(int* node_arr, int* h_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m) {
+Map createMapWithInput(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m) {
     Map map;
     initMap(&map);
     for (int i = 0; i < n; i++) {
         pushBackIntList(&map.point_list, node_arr[i]);
-        pushBackIntList(&map.h_list, h_arr[i]);
+        pushBackIntList(&map.h_list, 0);
     }
     for (int i = 0; i < m; i++) {
         Edge edge = {u_arr[i], v_arr[i], g_arr[i]};
@@ -97,12 +97,18 @@ Map createMapWithInput(int* node_arr, int* h_arr, int n, int* u_arr, int* v_arr,
     return map;
 }
 
+void createHeuristicList(Map *map, int *h_arr){
+    for(int i = 0; i < map->h_list.size; i++){
+        map->h_list.data[i] = h_arr[i];
+    }
+}
+
 int getHeuristic(int point, Map map) {
     for (int i = 0; i < map.h_list.size; i++) {
         if (point == map.point_list.data[i])
             return map.h_list.data[i];
     }
-    return -1;
+    return 0;
 }
 
 int getCost(int ut, int vt, Map map) {
@@ -112,7 +118,7 @@ int getCost(int ut, int vt, Map map) {
         if ((ut == u && vt == v) || (ut == v && vt == u))
             return map.edge_list.edges[i].g;
     }
-    return -1;
+    return 0;
 }
 
 IntList getNeighbors(int point, Map map) {
@@ -285,7 +291,8 @@ extern "C" {
 
     EMSCRIPTEN_KEEPALIVE
     OutputStruct *AStarAlgorithm(int* node_arr, int* h_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal) {
-        Map map = createMapWithInput(node_arr, h_arr, n, u_arr, v_arr, g_arr, m);
+        Map map = createMapWithInput(node_arr, n, u_arr, v_arr, g_arr, m);
+        createHeuristicList(&map, h_arr);
 
         IntList traversalOrder;
         initIntList(&traversalOrder);
@@ -295,6 +302,16 @@ extern "C" {
 
         IntList path = getGoalPath(node);
         return createOutputStruct(path, traversalOrder, cost);
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    void BestFirstSearchAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    void GreedyAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+
     }
 
     EMSCRIPTEN_KEEPALIVE

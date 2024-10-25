@@ -127,15 +127,12 @@
         const select1 = document.getElementById('start');
         const select2 = document.getElementById('goal');
         
-        // Lưu giá trị được chọn hiện tại
         const selected1 = select1.value || null;
         const selected2 = select2.value || null;
 
-        // Clear cả hai select nhưng vẫn giữ giá trị đã chọn
         select1.innerHTML = '';
         select2.innerHTML = '';
 
-        // Populate select1, bỏ qua giá trị đã chọn trong select2
         items.forEach(item => {
             const option = document.createElement('option');
             option.value = item;

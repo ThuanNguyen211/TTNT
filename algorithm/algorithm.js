@@ -1048,9 +1048,9 @@ var wasmImports = {
 };
 var wasmExports = createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors', 0);
+var _UCSAlgorithm = Module['_UCSAlgorithm'] = createExportWrapper('UCSAlgorithm', 8);
+var _GreedyAlgorithm = Module['_GreedyAlgorithm'] = createExportWrapper('GreedyAlgorithm', 9);
 var _AStarAlgorithm = Module['_AStarAlgorithm'] = createExportWrapper('AStarAlgorithm', 9);
-var _BestFirstSearchAlgorithm = Module['_BestFirstSearchAlgorithm'] = createExportWrapper('BestFirstSearchAlgorithm', 8);
-var _GreedyAlgorithm = Module['_GreedyAlgorithm'] = createExportWrapper('GreedyAlgorithm', 8);
 var _wasmmalloc = Module['_wasmmalloc'] = createExportWrapper('wasmmalloc', 1);
 var _wasmfree = Module['_wasmfree'] = createExportWrapper('wasmfree', 1);
 var _main = Module['_main'] = createExportWrapper('main', 2);

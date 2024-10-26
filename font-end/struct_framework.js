@@ -5,7 +5,6 @@ function registerStruct(name, structFormat) {
 }
 
 function decodeStruct(name, memory, offset = 0) {
-    // console.log(memory);
     
     var ret = {};
     let cursor = offset;
@@ -87,39 +86,63 @@ function run(nodes, edges, algorithm, start, goal){
         return;
     }
 
-    var node_arr = [];
-    var h_arr = [];
-    var u_arr = [];
-    var v_arr = [];
-    var g_arr = [];
+    let node_arr = [];
+    let h_arr = [];
+    let u_arr = [];
+    let v_arr = [];
+    let g_arr = [];
 
-    for(var i = 1; i <= nodes.length; i++){
+    for(let i = 1; i <= nodes.length; i++){
         node_arr.push(nodes.get(i).id);
-        h_arr.push(nodes.get(i).h);
     }
 
-    for(var i = 1; i <= edges.length; i++){
+    for(let i = 1; i <= edges.length; i++){
         u_arr.push(edges.get(i).from);
         v_arr.push(edges.get(i).to);
         g_arr.push(edges.get(i).label);
     }
 
     const node_ptr = encodeArray(node_arr, node_arr.length);
-    const h_ptr = encodeArray(h_arr, h_arr.length);
-    const u_ptr = encodeArray(u_arr, u_arr.length)
-    const v_ptr = encodeArray(v_arr, v_arr.length)
-    const g_ptr = encodeArray(g_arr, g_arr.length)
+    let h_ptr;
+    const u_ptr = encodeArray(u_arr, u_arr.length);
+    const v_ptr = encodeArray(v_arr, v_arr.length);
+    const g_ptr = encodeArray(g_arr, g_arr.length);
 
-    const res_ptr = exports.AStarAlgorithm(
-        node_ptr, h_ptr, node_arr.length,
-        u_ptr, v_ptr, g_ptr, u_arr.length, 
-        start, goal
-    );
+    let res_ptr;
+    if(algorithm == 1){
+        res_ptr = exports.UCSAlgorithm(
+            node_ptr, node_arr.length,
+            u_ptr, v_ptr, g_ptr, u_arr.length, 
+            start, goal
+        );
+    } else {
+
+        for(let i = 1; i <= nodes.length; i++){
+            node_arr.push(nodes.get(i).id);
+            h_arr.push(nodes.get(i).h);
+        }
+        h_ptr = encodeArray(h_arr, h_arr.length);
+
+        if (algorithm == 2) {
+            res_ptr = exports.GreedyAlgorithm(
+                node_ptr, h_ptr, node_arr.length,
+                u_ptr, v_ptr, g_ptr, u_arr.length, 
+                start, goal
+            );
+        } else {
+            res_ptr = exports.AStarAlgorithm(
+                node_ptr, h_ptr, node_arr.length,
+                u_ptr, v_ptr, g_ptr, u_arr.length, 
+                start, goal
+            );
+        }
+
+    } 
 
     const res = startDecodeStruct('outputStruct', res_ptr, memory);
 
     exports.wasmfree(node_ptr);
-    exports.wasmfree(h_ptr);
+    if(algorithm != 1) exports.wasmfree(h_ptr);
     exports.wasmfree(u_ptr);
     exports.wasmfree(v_ptr);
     exports.wasmfree(g_ptr);

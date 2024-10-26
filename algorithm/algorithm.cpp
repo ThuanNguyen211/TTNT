@@ -198,6 +198,70 @@ void sortNodeListByF(NodeList* list) {
     }
 }
 
+void sortNodeListByH(NodeList* list) {
+    for (int i = 0; i < list->size - 1; i++) {
+        for (int j = i + 1; j < list->size; j++) {
+            int f1 = list->nodes[i]->h;
+            int f2 = list->nodes[j]->h;
+            if (f1 < f2) {
+                Node* temp = list->nodes[i];
+                list->nodes[i] = list->nodes[j];
+                list->nodes[j] = temp;
+            }
+        }
+    }
+}
+
+Node* solveGreedy(Map map, int start, int goal, IntList *traversing_order) {  
+    NodeList openList, closeList;
+    initNodeList(&openList);
+    initNodeList(&closeList);
+
+    Node* root = (Node*)malloc(sizeof(Node));
+    root->point = start;
+    root->parent = NULL;
+    root->h = getHeuristic(start, map);
+    root->g = 0;
+    pushBackNodeList(&openList, root);
+
+    while (openList.size > 0) {
+
+        sortNodeListByH(&openList);
+
+        Node* node = getBackNodeList(openList);
+        popBackNodeList(&openList);
+        pushBackNodeList(&closeList, node);
+
+        pushBackIntList(traversing_order, node->point);
+        if (node->point == goal) return node;
+
+        IntList neighbors = getNeighbors(node->point, map);
+        for (int i = 0; i < neighbors.size; i++) {
+            Node* newNode = (Node*)malloc(sizeof(Node));
+            newNode->point = neighbors.data[i];
+            newNode->parent = node;
+            newNode->h = getHeuristic(newNode->point, map);
+            newNode->g = node->g + getCost(node->point, newNode->point, map);
+
+            int posClose;
+            if (findNodeInNodeList(&closeList, newNode->point, &posClose) != NULL) {
+                free(newNode);
+                continue;
+            }
+
+            int posOpen;
+            Node* foundInOpen = findNodeInNodeList(&openList, newNode->point, &posOpen);
+            if (foundInOpen == NULL) {
+                pushBackNodeList(&openList, newNode);
+            } else {
+                free(newNode);
+            }
+        }
+    }
+
+    return NULL;
+}
+
 Node* solveAStar(Map map, int start, int goal, IntList *traversalOrder) {
     NodeList openList, closeList;
     initNodeList(&openList);
@@ -230,14 +294,14 @@ Node* solveAStar(Map map, int start, int goal, IntList *traversalOrder) {
             Node* foundInOpen = findNodeInNodeList(&openList, newNode->point, &posOpen);
             Node* foundInClose = findNodeInNodeList(&closeList, newNode->point, &posClose);
             if(!foundInOpen && !foundInClose){
-            	pushBackNodeList(&openList, newNode);
+                pushBackNodeList(&openList, newNode);
             } else if(foundInOpen && foundInOpen->g > newNode->g){
-            	removeNodeAt(&openList, posOpen + 1);
+                removeNodeAt(&openList, posOpen + 1);
                 pushBackNodeList(&openList, newNode);
             } else if(foundInClose && foundInClose->g > newNode->g){
-            	removeNodeAt(&closeList, posClose + 1);
+                removeNodeAt(&closeList, posClose + 1);
                 pushBackNodeList(&openList, newNode);
-            }    
+            } else free(newNode);   
         }
         sortNodeListByF(&openList);
     }
@@ -290,6 +354,26 @@ OutputStruct *createOutputStruct(IntList pathToGoal, IntList traversalOrder, int
 extern "C" {
 
     EMSCRIPTEN_KEEPALIVE
+    void UCSAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+
+    }
+    
+    EMSCRIPTEN_KEEPALIVE
+    OutputStruct *GreedyAlgorithm(int* node_arr, int* h_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+        Map map = createMapWithInput(node_arr, n, u_arr, v_arr, g_arr, m);
+        createHeuristicList(&map, h_arr);
+
+        IntList traversalOrder;
+        initIntList(&traversalOrder);
+
+        Node *node = solveGreedy(map, start, goal, &traversalOrder);
+        int cost = node->g;
+
+        IntList path = getGoalPath(node);
+        return createOutputStruct(path, traversalOrder, cost);
+    }
+
+    EMSCRIPTEN_KEEPALIVE
     OutputStruct *AStarAlgorithm(int* node_arr, int* h_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal) {
         Map map = createMapWithInput(node_arr, n, u_arr, v_arr, g_arr, m);
         createHeuristicList(&map, h_arr);
@@ -302,16 +386,6 @@ extern "C" {
 
         IntList path = getGoalPath(node);
         return createOutputStruct(path, traversalOrder, cost);
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    void BestFirstSearchAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
-
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    void GreedyAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
-
     }
 
     EMSCRIPTEN_KEEPALIVE

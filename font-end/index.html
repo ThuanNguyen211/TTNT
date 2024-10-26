@@ -10,51 +10,46 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container-xxl">
 
-        <div class="container text-center">
+    <div class="container text-center">
 
-            <div class="row align-items-start">
+        <div class="row align-items-start">
 
-                <div class="col">
-                    <div id="network"></div>
-                </div>
+            <div class="col">
+                <div id="network"></div>
+            </div>
 
-                <div class="col">
-                    <div id="inputform">
-                        <div class="edge">
-                            <div class="node">
-                                <input type="text" name="node1" placeholder="node1">
-                                <input class="h" type="number" name="h1" placeholder="h1">
-                            </div>
-                            <input type="number" name="weight" placeholder="w">
-                            <div class="node">
-                                <input type="text" name="node2" placeholder="node2">
-                                <input class="h" type="number" name="h2" placeholder="h2">
-                            </div>
-                        </div>
+            <div class="col">
+                <div id="inputform">
+                    <div class="edge">
+                        <input type="text" name="node1" placeholder="node1" onblur="updateHueristicInput(this)">
+                        <input type="number" name="weight" placeholder="w">
+                        <input type="text" name="node2" placeholder="node2" onblur="updateHueristicInput(this)">
                     </div>
-                    <button class="add-edge-btn btn btn-secondary" onclick="addEdgeInput()">+</button></br>
-
-                    <br>
-                    <button class="btn btn-primary" onclick="drawNetwork()" id="submit">Submit</button>
-                    <select id="algorithm" class="form-select form-select-sm" aria-label="Small select example" style="width: 150px;display: inline-block;">
-                        <option value="1" selected>UCS</option>
-                        <option value="2">Greedy</option>
-                        <option value="3">A Star</option>
-                    </select><br>
-
-                    <select id="start" onblur="updateSelects()"></select>
-                    <select id="goal" onblur="updateSelects()"></select>
-
-                    <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
-                    <div id="res"></div>
-
                 </div>
+                <button class="add-edge-btn btn btn-secondary" onclick="addEdgeInput()">+</button></br>
+
+                <br>
+                <button class="btn btn-primary" onclick="drawNetwork()" id="submit">Submit</button>
+                <select id="algorithm" class="form-select form-select-sm" aria-label="Small select example" style="width: 150px;display: inline-block;">
+                    <option value="1" selected>UCS</option>
+                    <option value="2">Greedy</option>
+                    <option value="3">A Star</option>
+                </select><br>
+
+                <select id="start" onchange="updateSelects()"></select> 
+                <select id="goal" onchange="updateSelects()"></select>
+
+                <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
+                <div id="res"></div>
+
+            </div>
+            <div id="h-list" class="col">
+                
             </div>
         </div>
-
     </div>
+
 
 </body>
 
@@ -66,33 +61,20 @@
     var map = {};
 
     function addEdgeInput() {
-        const inputs = document.querySelectorAll('#inputform input');
-        const values = Array.from(inputs).map(input => input.value);
-
         const inputform = document.querySelector('#inputform');
-        inputform.innerHTML += `
-            <div class="edge">
-                <div class="node">
-                    <input type="text" name="node1" placeholder="node1">
-                    <input class="h" type="number" name="h1" placeholder="h1">
-                </div>
-                <input type="number" name="weight" placeholder="w">
-                <div class="node">
-                    <input type="text" name="node2" placeholder="node2">
-                    <input class="h" type="number" name="h2" placeholder="h2">
-                </div>
-            </div>
-        `;
 
-        const newInputs = document.querySelectorAll('#inputform input');
-        values.forEach((value, index) => {
-            newInputs[index].value = value;
-        });
+        inputform.insertAdjacentHTML('beforeend', `
+            <div class="edge">
+                <input type="text" name="node1" placeholder="node1" onblur="updateHueristicInput(this)">
+                <input type="number" name="weight" placeholder="w">
+                <input type="text" name="node2" placeholder="node2" onblur="updateHueristicInput(this)">
+            </div>
+        `);
     }
 
     function drawNetwork(){
         map = draw();
-        updateSelects();
+        if(map != null) updateSelects();
     }
 
     function runAlgorithm(){
@@ -147,7 +129,6 @@
             }
         });
 
-        // Populate select2, bỏ qua giá trị đã chọn trong select1
         items.forEach(item => {
             const option = document.createElement('option');
             option.value = item;
@@ -171,6 +152,23 @@
             }
             populateSelects(nodes);
         }
+    }
+
+    let existingNodes = [];
+    function updateHueristicInput(inputItem){
+        if(document.getElementById('algorithm').value == 1) return;
+
+        const inputValue = inputItem.value;
+        if(inputValue == '' || existingNodes.includes(inputValue)) return;
+
+        document.querySelector('#h-list').insertAdjacentHTML('beforeend', `
+            <div class="h">
+                <p style="display: inline-block;">${inputValue}</p>
+                <input type="number" id="h-${inputValue}">
+            </div>
+        `);
+
+        existingNodes.push(inputValue);
     }
 
 </script>

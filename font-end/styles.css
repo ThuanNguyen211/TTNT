@@ -1,12 +1,11 @@
+.container {
+    margin-top: 100px;
+}
+
 #network {
-    margin-top: 20px;
     width: 800px;
     height: 600px;
     border: 1px solid lightgray;
-}
-
-#inputform {
-    margin-top: 100px;
 }
 
 #inputform input{
@@ -16,4 +15,9 @@
 #inputform .node {
     display: inline-block;
     margin-bottom: 10px;
+}
+
+#h-list input {
+    margin-left: 10px;
+    width: 50px;
 }

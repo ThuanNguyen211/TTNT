@@ -143,11 +143,6 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 	root->h = get_heuristic(start, map);
 	root->g = 0;
 
-	if(root->h == -1) {
-		printf("Hueristic of root is -1");
-		return NULL;
-	}
-
 	// Đưa root node vào open
 	openList.push_back(root);
 
@@ -177,16 +172,6 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 			newNode->h = get_heuristic(newNode->point, map);
 			newNode->g = newNode->parent->g + get_cost(newNode->parent->point, newNode->point, map);
 
-			if(newNode->h == -1) {
-				printf("Hueristic of new node is -1");
-				return NULL;
-			}
-
-			if(newNode->g == -1) {
-				printf("Cost of new node is -1");
-				return NULL;
-			}
-
 			// Kiểm tra sự hiện diện của láng giềng trong open và close
 			vector<Node*>::iterator posOpen, posClose; // Chứa vị trí nếu tìm được
 			Node* nodeFoundOpen = find_point_in_list(newNode->point, openList, &posOpen);
@@ -196,13 +181,11 @@ Node* AStarAlgorithm(Map map, char start, char goal, vector<char> *traversing_or
 			if(nodeFoundOpen == NULL && nodeFoundClose == NULL){
 				openList.push_back(newNode);
 			}
-
 			// Nếu đã có trong open và chi phí tệ hơn -> xóa node tìm thấy và thêm node hiện tại vào open
 			else if(nodeFoundOpen != NULL && nodeFoundOpen->g > newNode->g){
 				openList.erase(posOpen);
 				openList.push_back(newNode);
 			}
-
 			// Nếu đã có trong close và chi phí tệ hơn -> xóa node tìm thấy và thêm node hiện tại vào open
 			else if(nodeFoundClose != NULL && nodeFoundClose->g > newNode->g){
 				closeList.erase(posClose);

@@ -54,6 +54,8 @@ const options = {
 
 const network = new vis.Network(container, data, options);
 
+var newNodeList = [];
+var newEdgeList = [];
 function draw(){
 
     const inputForm = document.getElementById('inputform');
@@ -62,48 +64,92 @@ function draw(){
     for (let i = 0; i < edges_input.length; i++) {
         const edge = edges_input[i];
 
-        // Lấy các giá trị input trong phần tử con 'edge'
         const source1 = edge.querySelector('input[name="node1"]').value;
-        const h1 = edge.querySelector('input[name="h1"]').value;
         const source2 = edge.querySelector('input[name="node2"]').value;
-        const h2 = edge.querySelector('input[name="h2"]').value;
         const weight = edge.querySelector('input[name="weight"]').value;
 
-        if([source1, h1, source2, h2, weight].includes(''))
-            continue;
+        if([source1, source2, weight].includes('')){
+            alert('Nhap cung khong hop le');
+            return null;
+        }
+        
+        let h1 = 0, h2 = 0;
+        if(document.querySelector('#algorithm').value == '1') {
+            h1 = -1;
+            h2 = -1;
+        } else {
+            h1 = document.querySelector(`#h-${source1}`).value;
+            h2 = document.querySelector(`#h-${source2}`).value;
+            if(h1 == '' || h2 == ''){
+                alert('Nhap heuristic khong hop le');
+                return null;
+            }
+        }
+        
+        const node1 = {name: source1, h: h1};
+        const node2 = {name: source2, h: h2};
 
-        const node1 = getNode(source1, h1);
-        const node2 = getNode(source2, h2);
+        if(!newNodeList.find(node => node1.name === node.name))
+            newNodeList.push(node1);
 
-        addEdge(node1, node2, weight);
+        if(!newNodeList.find(node => node2.name === node.name))
+            newNodeList.push(node2);
+
+        const newEdge = {u: source1, v: source2, w: weight};
+        if(!newEdgeList.find(edge => (newEdge.u == edge.u && newEdge.v == edge.v) || (newEdge.v == edge.u && newEdge.u == edge.v)))
+            newEdgeList.push(newEdge);
+
     }
-    
+
+    newNodeList.forEach(newNode => addNode(newNode));
+    newEdgeList.forEach(newEdge => addEdge(newEdge));
+
     return {nodelist: nodes, edgelist: edges};
 
 }
 
-function getNode(name, h){
-
-    for(var i = 1; i <= nodes.length; i++){
-        if(nodes.get(i).name == name)
-            return nodes.get(i);
-    }
-
-    const newNode = {id: nodes.length + 1, label: `${name}\n${h}`, name: name, h: h};
-    nodes.add(newNode);
-
-    return newNode;
+function createNode(name, h){
+    return {id: nodes.length + 1, label: `${name}${h != -1 ? `\n${h}` : ''}`, name: name, h: h};
 }
 
-function addEdge(node1, node2, g){
+function getNode(name){
+    let res = null; 
+    nodes.forEach(node => {
+        if(node.name == name)
+            res = node;
+    });
+    
+    return res;
+}
 
-    for(var i = 1; i <= edges.length; i++){
-        if(edges.get(i).from == node1.id && edges.get(i).to == node2.id)
-            return;
-        if(edges.get(i).from == node2.id && edges.get(i).to == node1.id)
-            return;
+function getEdge(node1_name, node2_name){
+
+    const idNode1 = getNode(node1_name).id;
+    const idNode2 = getNode(node2_name).id;
+
+    for(let i = 0; i < edges.length; i++){
+        const edge = edges.get(i + 1);
+        if(edge.from == idNode1 && edge.to == idNode2)
+            return edge;
+        if(edge.from == idNode2 && edge.to == idNode1)
+            return edge;
     }
 
-    const newEdge = {from: node1.id, to: node2.id, label: g, id: edges.length + 1};
-    edges.add(newEdge);
+    return null;
+}
+
+function createEdge(u, v, w){
+    return {from: getNode(u).id, to: getNode(v).id, label: w, id: edges.length + 1}
+}
+
+function addNode(newNode){
+    if(getNode(newNode.name) == null){
+        nodes.add(createNode(newNode.name, newNode.h))
+    }
+}
+
+function addEdge(edge){
+    if(getEdge(edge.u, edge.v) == null){
+        edges.add(createEdge(edge.u, edge.v, edge.w));
+    }
 }

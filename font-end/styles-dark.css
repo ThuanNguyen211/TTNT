@@ -8,14 +8,16 @@
     border-radius: 30px;
     font-family: monospace;
 }
+
 .logo img {
     max-height: 80px; 
     width: auto;      
     height: auto;     
-    display: block;
+    display: inline-block;
 }
 
-h2{
+h2 {
+    display: inline-block;
     padding-left: 25px;
     font-size: 28px;
 }
@@ -58,13 +60,27 @@ h2{
     background-color: white;
     transition: 0.4s;
 }
+  
+input:checked + .slider {
+    background-color: #495057;
+    box-shadow: inset 2px 5px 10px rgb(0, 0, 0, 0.3);
+}
+  
+input:checked + .slider:before {
+    transform: translateX(2.8em) rotate(360deg);
+}
+  
+
+body {
+    background-color: #212529;
+}
 
 .container {
     display: flex;
 }
 
 .container > div {
-    background-color: white;
+    background-color: #343a40;
     margin: 10px;
     padding: 20px;
     font-size: 30px;
@@ -72,7 +88,7 @@ h2{
 
 #network-container {
     border-radius: 30px;
-    background: lightgrey;
+    background: #6c757d;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset,
                 rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
 }
@@ -85,20 +101,15 @@ h2{
 
 .input-container {
     border-radius: 50px;
-    background: #e0e0e0;
-    box-shadow: 20px 20px 60px #bebebe,
-                -20px -20px 60px #ffffff;
+    background-color: #343a40;
+    box-shadow: 20px 20px 60px #343a40,
+                -20px -20px 60px #495057;
 }
 
 #inputform {
     padding-top: 24px;
     width: 300px;
-}
-
-.title {
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
+    background-color: #343a40;
 }
 
 .edge , .edge-title{
@@ -162,32 +173,32 @@ h2{
     outline: none;
     border-radius: 15px;
     padding: 1em;
-    background-color: #ccc;
+    background-color: #adb5bd;
     box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
     transition: 300ms ease-in-out;
 }
 
 .input:focus {
-    background-color: white;
+    background-color: #ced4da;
     transform: scale(1.05);
-    box-shadow: 13px 13px 100px #969696,
-                -13px -13px 100px #ffffff;
+    box-shadow: 13px 13px 100px #343a40,
+                -13px -13px 100px #495057;
 }
 
 button {
     color: #090909;
     padding: 0.7em 1.7em;
     border-radius: 0.5em;
-    background: #e8e8e8;
+    background: #adb5bd;
     cursor: pointer;
-    border: 1px solid #e8e8e8;
+    border: 1px solid #adb5bd;
     transition: all 0.3s;
-    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    box-shadow: 6px 6px 12px #343a40, -6px -6px 12px #495057;
     font-family: monospace;
 }
   
 button:hover {
-    border: 1px solid white;
+    border: 1px solid #ced4da;
 }
 
 button:active {
@@ -211,7 +222,7 @@ button:active {
     box-shadow: rgba(50, 50, 93, 0.2) 0px 25px 50px -10px,
         rgba(0, 0, 0, 0.25) 0px 10px 30px -15px,
         rgba(10, 37, 64, 0.26) 0px -2px 6px 0px inset;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(2px);
 }
   
 .selector {
@@ -280,11 +291,11 @@ button:active {
     color: #090909;
     padding: 0.7em 1.7em;
     border-radius: 0.5em;
-    background: #e8e8e8;
+    background: #adb5bd;
     cursor: pointer;
-    border: 1px solid #e8e8e8;
+    border: 1px solid #adb5bd;
     transition: all 0.3s;
-    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    box-shadow: 6px 6px 12px #343a40, -6px -6px 12px #495057;
     appearance: none; 
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -320,8 +331,8 @@ button:active {
     text-align: center;
     font-size: 16px;
     font-weight: 500;
-    color: #555; 
-    background-color: #fafafa; 
+    color: rgb(177, 176, 176); 
+    background-color: #343a40;
     border-radius: 12px; 
     font-family: monospace;
 }

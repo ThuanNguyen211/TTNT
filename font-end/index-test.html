@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Algorithms Visualization</title>
+    <link id="stylesheet" rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="CTU_logo.png">
+        </div>
+        <h2>Trí tuệ nhân tạo - Nhóm 10</h2>
+        <label class="switch" style="position: absolute; left: 95%;">
+            <input type="checkbox" id="themeToggle" onchange="changeTheme(this)"/>
+            <span class="slider"></span>
+        </label>
+
+    </header>
+    
+    <div class="container" id="container">
+        
+        <div class="input-container">
+            <div class="radio-input">
+                <div class="glass"></div>
+                <div class="selector">
+                    <div class="choice">
+                        <div>
+                        <input class="choice-circle" checked="true" value="1" name="number-selector" id="one" type="radio" onchange="showHeuristicInput()"/>
+                        <div class="ball"></div>
+                        </div>
+                        <label for="one" class="choice-name">UCS</label>
+                    </div>
+                    <div class="choice">
+                        <div>
+                            <input class="choice-circle" value="2" name="number-selector" id="two" type="radio" onchange="showHeuristicInput()"/>
+                            <div class="ball"></div>
+                        </div>
+                        <label for="two" class="choice-name">Greedy</label>
+                    </div>
+                    <div class="choice">
+                        <div>
+                            <input class="choice-circle" value="3" name="number-selector" id="three" type="radio" onchange="showHeuristicInput()"/>
+                            <div class="ball"></div>
+                        </div>
+                        <label for="three" class="choice-name">A Star</label>
+                    </div>
+                    </div>
+              </div>
+            <div id="inputform">
+                <div class="edge-title">
+                    <div class="title">From</div>
+                    <div class="title">Cost</div>
+                    <div class="title">To</div>
+                </div>
+                <div class="edge">
+                    <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                    <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
+                    <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
+                </div>
+            </div>
+            <button class="add-edge-btn" onclick="addEdgeInput()">+</button>
+
+            <div class="update-btn">
+                <button onclick="drawNetwork()">Update Map</button>
+            </div>
+
+            <div class="runContainer">
+                <select id="start" class="custom-select" onchange="updateSelects()">
+                    <option value="0">-</option>
+                </select> 
+                <select id="goal" class="custom-select" onchange="updateSelects()">
+                    <option value="0">-</option>
+                </select>
+                <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
+            </div>
+            
+            <div id="res"></div>
+
+        </div> 
+
+        <div id="network-container">
+            <div id="network"></div>
+        </div>
+
+    </div>
+
+
+</body>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="map.js"></script>
+<script src="struct_framework.js"></script>
+<script>
+
+    var map = {};
+
+    function addEdgeInput() {
+        const inputform = document.querySelector('#inputform');
+
+        inputform.insertAdjacentHTML('beforeend', `
+            <div class="edge">
+                <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
+                <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
+            </div>
+        `);
+    }
+
+    function drawNetwork(){
+        map = draw();
+        if(map != null) updateSelects();
+    }
+
+    function runAlgorithm(){
+
+        const algorithmOption = document.querySelector('input[name="number-selector"]:checked').value;
+        const startName = document.getElementById('start').value;
+        const goalName = document.getElementById('goal').value;
+
+        if(startName == 0 || goalName == 0) {
+            alert('Vui lòng chọn start & goal');
+            return;
+        }
+
+        var start, goal;
+        map.nodelist.forEach(node => {
+            if(node.name == startName)
+                start = node.id;
+            else if(node.name == goalName)
+                goal = node.id;
+        });
+
+        const output = run(nodes, edges, algorithmOption, start, goal);
+        console.log(output);
+
+        const path = output.pathToGoal;
+
+        highlightNodesAndEdges(path);
+    }
+
+    function populateSelects(items) {
+
+        const select1 = document.getElementById('start');
+        const select2 = document.getElementById('goal');
+        
+        const selected1 = select1.value || null;
+        const selected2 = select2.value || null;
+
+        select1.innerHTML = '<option value="0">-</option>';
+        select2.innerHTML = '<option value="0">-</option>';
+
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+
+            if (item === selected1) {
+                option.selected = true;
+            }
+
+            if (item !== selected2) {
+                select1.appendChild(option);
+            }
+        });
+
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+
+            if (item === selected2) {
+                option.selected = true;
+            }
+
+            if (item !== selected1) {
+                select2.appendChild(option);
+            }
+        });
+    }
+
+    function updateSelects() {
+        if(map != {}){
+            let nodes = [];
+            for(var i = 1; i <= map.nodelist.length; i++){
+                nodes.push(map.nodelist.get(i).name);
+            }
+            populateSelects(nodes);
+        }
+    }
+
+    let existingNodes = [];
+    function updateHueristicInput(inputItem){
+
+        if(document.querySelector('input[name="number-selector"]:checked').value == 1) return;
+
+        const inputValue = inputItem.value;
+        if(inputValue == '' || existingNodes.includes(inputValue)) return;
+
+        document.querySelector('#h-list').insertAdjacentHTML('beforeend', `
+            <div class="h">
+                <p class="title" styles="margin:0px">${inputValue}</p>
+                <input class="input" type="number" id="h-${inputValue}">
+            </div>
+        `);
+
+        existingNodes.push(inputValue);
+    }
+
+    function showHeuristicInput(){
+
+        const algorithmOption = document.querySelector('input[name="number-selector"]:checked').value;
+        let container = document.querySelector('#container');
+        const inputContainer = document.querySelector('.input-container');
+
+        if(algorithmOption != 1){
+            if(document.querySelector('#h-list') == null){
+
+                let hList = document.createElement('div');
+                hList.id = 'h-list';
+                hList.className = 'input-container';
+
+                let titleDiv = document.createElement('div');
+                titleDiv.className = 'title';
+                titleDiv.textContent = 'Heuristic';
+
+                hList.appendChild(titleDiv);
+
+                container.insertBefore(hList, inputContainer.nextSibling);
+            }    
+        } else {
+            const hList = document.querySelector('#h-list');
+            if(hList) {
+                hList.remove();
+            }
+        }
+    }
+
+    function changeTheme(input){
+        if (input.checked) {
+            document.getElementById('stylesheet').href = 'styles-dark.css'; 
+        } else {
+            document.getElementById('stylesheet').href = 'styles.css';
+        }
+    }
+
+
+</script>
+
+</html>

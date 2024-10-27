@@ -18,7 +18,7 @@ typedef struct{
     vector<char> point_list; //Danh sách các điểm
     vector<int> h_list; //Danh sách heuristic của từng điểm
     vector<Edge> edge_list; //Danh sách các đường đi
-}Map;
+} Map;
 
 //Khởi tạo Map
 void init_map(Map *map){

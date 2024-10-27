@@ -1,3 +1,22 @@
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+    border-radius: 30px;
+    font-family: monospace;
+}
+.logo img {
+    max-height: 80px; 
+    width: auto;      
+    height: auto;     
+    display: block;
+}
+
+h2{
+    padding-left: 25px;
+    font-size: 28px;
+}
 .container {
     display: flex;
 }

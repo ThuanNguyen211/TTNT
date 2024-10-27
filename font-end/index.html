@@ -14,13 +14,8 @@
     </header>
     
     <div class="container" id="container">
-
-        <div id="network-container">
-            <div id="network"></div>
-        </div>
-
+        
         <div class="input-container">
-
             <div class="radio-input">
                 <div class="glass"></div>
                 <div class="selector">
@@ -47,7 +42,6 @@
                     </div>
                     </div>
               </div>
-
             <div id="inputform">
                 <div class="edge-title">
                     <div class="title">From</div>
@@ -79,6 +73,10 @@
             <div id="res"></div>
 
         </div> 
+
+        <div id="network-container">
+            <div id="network"></div>
+        </div>
 
     </div>
 
@@ -132,15 +130,8 @@
         console.log(output);
 
         const path = output.pathToGoal;
-        var resContainer = document.querySelector('#res');
-        resContainer.innerHTML = '';
-        for (var i = 0; i < path.length; i++){
-            if (i != 0) resContainer.textContent += ' => ';
-            resContainer.textContent += map.nodelist.get(path[i]).name;
-        }
 
         highlightNodesAndEdges(path);
-
     }
 
     function populateSelects(items) {
@@ -212,16 +203,25 @@
     }
 
     function showHeuristicInput(){
+
         const algorithmOption = document.querySelector('input[name="number-selector"]:checked').value;
         let container = document.querySelector('#container');
+        const inputContainer = document.querySelector('.input-container');
+
         if(algorithmOption != 1){
             if(document.querySelector('#h-list') == null){
-                container.insertAdjacentHTML('beforeend', `
-                    <div id="h-list" class="input-container">
-                        <div class="title">
-                            Heuristic
-                        </div>
-                    </div>`);
+
+                let hList = document.createElement('div');
+                hList.id = 'h-list';
+                hList.className = 'input-container';
+
+                let titleDiv = document.createElement('div');
+                titleDiv.className = 'title';
+                titleDiv.textContent = 'Heuristic';
+
+                hList.appendChild(titleDiv);
+
+                container.insertBefore(hList, inputContainer.nextSibling);
             }    
         } else {
             const hList = document.querySelector('#h-list');

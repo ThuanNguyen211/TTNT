@@ -5,20 +5,21 @@ const container = document.getElementById('network');
 const data = { nodes: nodes, edges: edges };
 const options = {
     nodes: {
-        shape: 'circle',       // Node shape ('circle', 'square', 'triangle', etc.)
-        size: 25,              // Node size
+        shape: 'circle',
+        size: 30,  // Kích thước nút
         color: {
-            border: '#2B7CE9', // Border color of the node
-            background: '#97C2FC', // Background color of the node
+            border: '#e8e8e8', // Đặt màu viền thành màu xám nhạt
+            background: '#e8e8e8', // Màu nền giống như nút
             hover: {
-                border: '#2B7CE9',
-                background: '#D2E5FF'
+                border: '#e8e8e8', // Màu viền khi hover
+                background: '#D2E5FF' // Màu nền khi hover
             }
-        },font: {
-            vadjust: 0, // Moves the label above the node
+        },
+        font: {
+            vadjust: 0,
             size: 14,
             multi: true,
-            color: '#333'
+            color: '#090909' // Màu chữ tối
         },
         margin: {
             top: 15,
@@ -27,30 +28,31 @@ const options = {
         },
     },
     edges: {
-        font: { color: '#000000', size: 18, align: 'horizontal' },
+        font: { color: '#090909', size: 16, align: 'horizontal' }, // Màu và kích thước chữ
         color: {
-            color: '#848484',  // Edge color
-            hover: '#848484'
+            color: '#848484',  // Màu cạnh
+            hover: '#2B7CE9'   // Màu khi hover
         },
-        width: 2              // Edge thicknes
+        width: 2              // Độ dày của cạnh
     },
     physics: {
-        enabled: true,         // Enable or disable physics animation
-        solver: 'forceAtlas2Based', // Physics solver ('barnesHut', 'forceAtlas2Based', etc.)
-        stabilization: { iterations: 100 } // Iterations for physics stabilization
+        enabled: true,
+        solver: 'forceAtlas2Based',
+        stabilization: { iterations: 100 }
     },
     interaction: {
-        hover: true,           // Enable hover effect on nodes
-        dragNodes: true,       // Allow nodes to be dragged
-        zoomView: true,        // Enable zooming with mouse wheel
-        dragView: false, // Ngăn kéo nền
-        zoomView: false  // Ngăn phóng to/thu nhỏ
+        hover: true,
+        dragNodes: true,
+        zoomView: true,
+        dragView: false,
+        zoomView: false
     },
     layout: {
-        randomSeed: 2,         // Seed for layout randomness (helps keep consistent layout)
-        improvedLayout: true   // Uses an improved algorithm for better layout
+        randomSeed: 2,
+        improvedLayout: true
     }
 };
+
 
 const network = new vis.Network(container, data, options);
 
@@ -74,7 +76,7 @@ function draw(){
         }
         
         let h1 = 0, h2 = 0;
-        if(document.querySelector('#algorithm').value == '1') {
+        if(document.querySelector('input[name="number-selector"]:checked').value == 1) {
             h1 = -1;
             h2 = -1;
         } else {
@@ -152,4 +154,46 @@ function addEdge(edge){
     if(getEdge(edge.u, edge.v) == null){
         edges.add(createEdge(edge.u, edge.v, edge.w));
     }
+}
+
+function highlightNodesAndEdges(nodeIds) {
+    // Đặt màu sắc mặc định cho tất cả các nút và cung
+    const defaultNodeColor = '#e8e8e8';
+    const defaultEdgeColor = '#848484';
+
+    // Cập nhật màu sắc cho tất cả các nút
+    const allNodes = nodes.get();
+    allNodes.forEach(node => {
+        nodes.update({ id: node.id, color: { background: defaultNodeColor, border: '#e8e8e8' } });
+    });
+
+    // Cập nhật màu sắc cho tất cả các cung
+    const allEdges = edges.get();
+    allEdges.forEach(edge => {
+        edges.update({ id: edge.id, color: { color: defaultEdgeColor } });
+    });
+
+    // Làm nổi bật các nút và cung được chỉ định
+    nodeIds.forEach(id => {
+        // Làm nổi bật nút
+        nodes.update({
+            id: id,
+            color: {
+                background: '#FFD700', // Màu nền nổi bật (vàng)
+                border: '#FFD700' // Màu viền nổi bật (vàng)
+            }
+        });
+
+        // Làm nổi bật các cung tương ứng
+        allEdges.forEach(edge => {
+            if (edge.from === id || edge.to === id) {
+                edges.update({
+                    id: edge.id,
+                    color: {
+                        color: '#FFD700' // Màu cung nổi bật (vàng)
+                    }
+                });
+            }
+        });
+    });
 }

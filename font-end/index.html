@@ -4,50 +4,76 @@
     <meta charset="UTF-8">
     <title>Graph Algorithms Visualization</title>
     <link rel="stylesheet" href="styles.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </head>
 <body>
 
-    <div class="container text-center">
+    <div class="container" id="container">
 
-        <div class="row align-items-start">
-
-            <div class="col">
-                <div id="network"></div>
-            </div>
-
-            <div class="col">
-                <div id="inputform">
-                    <div class="edge">
-                        <input type="text" name="node1" placeholder="node1" onblur="updateHueristicInput(this)">
-                        <input type="number" name="weight" placeholder="w">
-                        <input type="text" name="node2" placeholder="node2" onblur="updateHueristicInput(this)">
-                    </div>
-                </div>
-                <button class="add-edge-btn btn btn-secondary" onclick="addEdgeInput()">+</button></br>
-
-                <br>
-                <button class="btn btn-primary" onclick="drawNetwork()" id="submit">Submit</button>
-                <select id="algorithm" class="form-select form-select-sm" aria-label="Small select example" style="width: 150px;display: inline-block;">
-                    <option value="1" selected>UCS</option>
-                    <option value="2">Greedy</option>
-                    <option value="3">A Star</option>
-                </select><br>
-
-                <select id="start" onchange="updateSelects()"></select> 
-                <select id="goal" onchange="updateSelects()"></select>
-
-                <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
-                <div id="res"></div>
-
-            </div>
-            <div id="h-list" class="col">
-                
-            </div>
+        <div id="network-container">
+            <div id="network"></div>
         </div>
+
+        <div class="input-container">
+
+            <div class="radio-input">
+                <div class="glass"></div>
+                <div class="selector">
+                    <div class="choice">
+                        <div>
+                        <input class="choice-circle" checked="true" value="1" name="number-selector" id="one" type="radio" onchange="showHeuristicInput()"/>
+                        <div class="ball"></div>
+                        </div>
+                        <label for="one" class="choice-name">UCS</label>
+                    </div>
+                    <div class="choice">
+                        <div>
+                            <input class="choice-circle" value="2" name="number-selector" id="two" type="radio" onchange="showHeuristicInput()"/>
+                            <div class="ball"></div>
+                        </div>
+                        <label for="two" class="choice-name">Greedy</label>
+                    </div>
+                    <div class="choice">
+                        <div>
+                            <input class="choice-circle" value="3" name="number-selector" id="three" type="radio" onchange="showHeuristicInput()"/>
+                            <div class="ball"></div>
+                        </div>
+                        <label for="three" class="choice-name">A Star</label>
+                    </div>
+                    </div>
+              </div>
+
+            <div id="inputform">
+                <div class="edge-title">
+                    <div class="title">From</div>
+                    <div class="title">Cost</div>
+                    <div class="title">To</div>
+                </div>
+                <div class="edge">
+                    <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                    <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
+                    <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
+                </div>
+            </div>
+            <button class="add-edge-btn" onclick="addEdgeInput()">+</button>
+
+            <div class="update-btn">
+                <button onclick="drawNetwork()">Update Map</button>
+            </div>
+
+            <div class="runContainer">
+                <select id="start" class="custom-select" onchange="updateSelects()">
+                    <option value="0">-</option>
+                </select> 
+                <select id="goal" class="custom-select" onchange="updateSelects()">
+                    <option value="0">-</option>
+                </select>
+                <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
+            </div>
+            
+            <div id="res"></div>
+
+        </div> 
+
     </div>
 
 
@@ -65,9 +91,9 @@
 
         inputform.insertAdjacentHTML('beforeend', `
             <div class="edge">
-                <input type="text" name="node1" placeholder="node1" onblur="updateHueristicInput(this)">
-                <input type="number" name="weight" placeholder="w">
-                <input type="text" name="node2" placeholder="node2" onblur="updateHueristicInput(this)">
+                <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
+                <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
             </div>
         `);
     }
@@ -79,9 +105,14 @@
 
     function runAlgorithm(){
 
-        const algorithm = document.querySelector('#algorithm').value;
+        const algorithmOption = document.querySelector('input[name="number-selector"]:checked').value;
         const startName = document.getElementById('start').value;
         const goalName = document.getElementById('goal').value;
+
+        if(startName == 0 || goalName == 0) {
+            alert('Vui lòng chọn start & goal');
+            return;
+        }
 
         var start, goal;
         map.nodelist.forEach(node => {
@@ -91,7 +122,7 @@
                 goal = node.id;
         });
 
-        const output = run(nodes, edges, algorithm, start, goal);
+        const output = run(nodes, edges, algorithmOption, start, goal);
         console.log(output);
 
         const path = output.pathToGoal;
@@ -101,6 +132,8 @@
             if (i != 0) resContainer.textContent += ' => ';
             resContainer.textContent += map.nodelist.get(path[i]).name;
         }
+
+        highlightNodesAndEdges(path);
 
     }
 
@@ -112,8 +145,8 @@
         const selected1 = select1.value || null;
         const selected2 = select2.value || null;
 
-        select1.innerHTML = '';
-        select2.innerHTML = '';
+        select1.innerHTML = '<option value="0">-</option>';
+        select2.innerHTML = '<option value="0">-</option>';
 
         items.forEach(item => {
             const option = document.createElement('option');
@@ -156,20 +189,42 @@
 
     let existingNodes = [];
     function updateHueristicInput(inputItem){
-        if(document.getElementById('algorithm').value == 1) return;
+
+        if(document.querySelector('input[name="number-selector"]:checked').value == 1) return;
 
         const inputValue = inputItem.value;
         if(inputValue == '' || existingNodes.includes(inputValue)) return;
 
         document.querySelector('#h-list').insertAdjacentHTML('beforeend', `
             <div class="h">
-                <p style="display: inline-block;">${inputValue}</p>
-                <input type="number" id="h-${inputValue}">
+                <p class="title" styles="margin:0px">${inputValue}</p>
+                <input class="input" type="number" id="h-${inputValue}">
             </div>
         `);
 
         existingNodes.push(inputValue);
     }
+
+    function showHeuristicInput(){
+        const algorithmOption = document.querySelector('input[name="number-selector"]:checked').value;
+        let container = document.querySelector('#container');
+        if(algorithmOption != 1){
+            if(document.querySelector('#h-list') == null){
+                container.insertAdjacentHTML('beforeend', `
+                    <div id="h-list" class="input-container">
+                        <div class="title">
+                            Heuristic
+                        </div>
+                    </div>`);
+            }    
+        } else {
+            const hList = document.querySelector('#h-list');
+            if(hList) {
+                hList.remove();
+            }
+        }
+    }
+
 
 </script>
 

@@ -72,6 +72,7 @@ h2{
 }
 
 #network-container {
+    position: relative;
     border-radius: 30px;
     background: lightgrey;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset,
@@ -86,12 +87,15 @@ h2{
 
 #res {
     height: 100px;
+    width: 95%;
     background-color: #ffffff;
     border-radius: 25px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    bottom: 18px;
 }
 
 #res div {

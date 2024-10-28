@@ -74,13 +74,21 @@
                 </select>
                 <button class="btn btn-success" onclick="runAlgorithm()">RUN</button>
             </div>
-            
-            <div id="res"></div>
-
         </div> 
 
         <div id="network-container">
             <div id="network"></div>
+            <div id="res" class="input-container">
+                <div id="traversalOrder" class="title">
+                    Traversal Order:
+                </div>
+                <div id="pathToGoal" class="title">
+                    Path To Goal:
+                </div>
+                <div id="totalCost" class="title">
+                    Total Cost:
+                </div>
+            </div>
         </div>
 
     </div>
@@ -134,9 +142,32 @@
         const output = run(nodes, edges, algorithmOption, start, goal);
         console.log(output);
 
-        const path = output.pathToGoal;
+        const pathToGoalRes = document.querySelector('#pathToGoal');
+        const traversalOrderRes = document.querySelector('#traversalOrder');
+        const totalCostRes = document.querySelector('#totalCost');
 
-        highlightNodesAndEdges(path);
+        pathToGoalRes.textContent = 'Path To Goal: ';
+        traversalOrderRes.textContent = 'Traversal Order: ';
+        totalCostRes.textContent = 'Total Cost: ';
+
+        const pathToGoal = output.pathToGoal;
+        const traversalOrder = output.traversalOrder;
+
+        resetHighlightMap();
+        for (let i = 0; i < pathToGoal.length; i++) {
+            setTimeout(() => {
+                highlightNodesAndEdges(pathToGoal.slice(0, i + 1), '#44af69');
+            }, (i + 1) * 1000);
+
+            pathToGoalRes.textContent += ((i == 0) ? '' : ' -> ') + getNodeNameById(pathToGoal[i]);
+        }
+
+        for (let i = 0; i < traversalOrder.length; i++) {
+            traversalOrderRes.textContent += ((i == 0) ? '' : ' -> ') + getNodeNameById(traversalOrder[i]);
+        }
+
+        totalCostRes.textContent += output.cost;
+
     }
 
     function populateSelects(items) {

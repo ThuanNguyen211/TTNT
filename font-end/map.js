@@ -6,34 +6,39 @@ const data = { nodes: nodes, edges: edges };
 const options = {
     nodes: {
         shape: 'circle',
-        size: 30,  // Kích thước nút
+        size: 30,
         color: {
-            border: '#e8e8e8', // Đặt màu viền thành màu xám nhạt
-            background: '#e8e8e8', // Màu nền giống như nút
-            hover: {
-                border: '#e8e8e8', // Màu viền khi hover
-                background: '#D2E5FF' // Màu nền khi hover
-            }
+            border: '#e8e8e8',
+            background: '#e8e8e8',
+            hover: { border: '#e8e8e8', background: '#e8e8e8' },
+            highlight: { border: '#e8e8e8', background: '#e8e8e8' }
         },
         font: {
+            face: 'Consolas',
             vadjust: 0,
             size: 14,
             multi: true,
-            color: '#090909' // Màu chữ tối
+            color: '#212529',
+            align: 'center'
         },
         margin: {
-            top: 15,
-            bottom: 15,
-            left: 8
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20
         },
     },
     edges: {
-        font: { color: '#090909', size: 16, align: 'horizontal' }, // Màu và kích thước chữ
-        color: {
-            color: '#848484',  // Màu cạnh
-            hover: '#2B7CE9'   // Màu khi hover
+        font: {
+            face: 'Consolas',
+            color: '#212529',
+            size: 14,
+            align: 'horizontal'
         },
-        width: 2              // Độ dày của cạnh
+        color: {
+            color: '#848484',
+        },
+        width: 2
     },
     physics: {
         enabled: true,
@@ -156,44 +161,82 @@ function addEdge(edge){
     }
 }
 
-function highlightNodesAndEdges(nodeIds) {
+function highlightNodesAndEdges(nodeIds, newColor) {
+
     // Đặt màu sắc mặc định cho tất cả các nút và cung
-    const defaultNodeColor = '#e8e8e8';
-    const defaultEdgeColor = '#848484';
-
-    // Cập nhật màu sắc cho tất cả các nút
     const allNodes = nodes.get();
-    allNodes.forEach(node => {
-        nodes.update({ id: node.id, color: { background: defaultNodeColor, border: '#e8e8e8' } });
-    });
-
-    // Cập nhật màu sắc cho tất cả các cung
     const allEdges = edges.get();
-    allEdges.forEach(edge => {
-        edges.update({ id: edge.id, color: { color: defaultEdgeColor } });
+
+    nodes.update({
+        id: nodeIds[0],
+        color: {
+            background: newColor,
+            border: newColor
+        }
     });
 
-    // Làm nổi bật các nút và cung được chỉ định
-    nodeIds.forEach(id => {
-        // Làm nổi bật nút
+    for(let i = 1; i < nodeIds.length; i++){
+
         nodes.update({
-            id: id,
+            id: nodeIds[i],
             color: {
-                background: '#FFD700', // Màu nền nổi bật (vàng)
-                border: '#FFD700' // Màu viền nổi bật (vàng)
+                background: newColor,
+                border: newColor
             }
         });
 
-        // Làm nổi bật các cung tương ứng
         allEdges.forEach(edge => {
-            if (edge.from === id || edge.to === id) {
+            if (edge.from === nodeIds[i] && edge.to === nodeIds[i - 1] || edge.from === nodeIds[i - 1] && edge.to === nodeIds[i]) {
                 edges.update({
                     id: edge.id,
                     color: {
-                        color: '#FFD700' // Màu cung nổi bật (vàng)
+                        color: newColor
                     }
                 });
             }
         });
+
+    }
+}
+
+function resetHighlightMap(){
+    const allEdges = edges.get();
+    const defaultColor = '#e8e8e8';
+
+    allEdges.forEach(edge => {
+        nodes.update({
+            id: edge.from,
+            color: {
+                background: defaultColor,
+                border: defaultColor
+            }
+        });
+
+        nodes.update({
+            id: edge.to,
+            color: {
+                background: defaultColor,
+                border: defaultColor
+            }
+        });  
+
+        edges.update({
+            id: edge.id,
+            color: {
+                color: defaultColor
+            }
+        });
     });
+}
+
+function getNodeNameById(id){
+    let res = '';
+    nodes.get().forEach(node => {
+        if(node.id == id){
+            res = node.name;
+            return;
+        }
+    });
+
+    return res;
 }

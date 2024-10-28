@@ -69,7 +69,6 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(2.8em) rotate(360deg);
 }
-  
 
 body {
     background-color: #212529;
@@ -95,15 +94,32 @@ body {
 
 #network {
     width: 850px;
-    height: 600px;
+    height: 400px;
     border: 1px solid none;
+}
+
+#res {
+    height: 100px;
+    background-color: #343a40;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#res div {
+    align-content: center;
+    text-align: left;
+    height: 22%;
+    width: 90%;
 }
 
 .input-container {
     border-radius: 50px;
     background-color: #343a40;
-    box-shadow: 20px 20px 60px #343a40,
-                -20px -20px 60px #495057;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset,
+                rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
 }
 
 #inputform {
@@ -193,7 +209,7 @@ button {
     cursor: pointer;
     border: 1px solid #adb5bd;
     transition: all 0.3s;
-    box-shadow: 6px 6px 12px #343a40, -6px -6px 12px #495057;
+    box-shadow: 6px 6px 6px #343a40;
     font-family: monospace;
 }
   

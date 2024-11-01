@@ -201,9 +201,23 @@ void sortNodeListByF(NodeList* list) {
 void sortNodeListByH(NodeList* list) {
     for (int i = 0; i < list->size - 1; i++) {
         for (int j = i + 1; j < list->size; j++) {
-            int f1 = list->nodes[i]->h;
-            int f2 = list->nodes[j]->h;
-            if (f1 < f2) {
+            int h1 = list->nodes[i]->h;
+            int h2 = list->nodes[j]->h;
+            if (h1 < h2) {
+                Node* temp = list->nodes[i];
+                list->nodes[i] = list->nodes[j];
+                list->nodes[j] = temp;
+            }
+        }
+    }
+}
+
+void sortNodeListByG(NodeList* list) {
+    for (int i = 0; i < list->size - 1; i++) {
+        for (int j = i + 1; j < list->size; j++) {
+            int g1 = list->nodes[i]->g;
+            int g2 = list->nodes[j]->g;
+            if (g1 < g2) {
                 Node* temp = list->nodes[i];
                 list->nodes[i] = list->nodes[j];
                 list->nodes[j] = temp;
@@ -308,6 +322,50 @@ Node* solveAStar(Map map, int start, int goal, IntList *traversalOrder) {
     return NULL;
 }
 
+Node* solveUCS(Map map, int start, int goal, IntList *traversalOrder) {
+    NodeList openList, closeList;
+    initNodeList(&openList);
+    initNodeList(&closeList);
+
+    Node* root = (Node*)malloc(sizeof(Node));
+    root->point = start;
+    root->parent = NULL;
+    root->g = 0;
+    pushBackNodeList(&openList, root);
+
+    while (openList.size > 0) {
+        Node* node = getBackNodeList(openList);
+        popBackNodeList(&openList);
+        pushBackNodeList(&closeList, node);
+
+        pushBackIntList(traversalOrder, node->point);
+        if (node->point == goal) return node;
+
+        IntList neighbors = getNeighbors(node->point, map);
+        for (int i = 0; i < neighbors.size; i++) {
+            Node* newNode = (Node*)malloc(sizeof(Node));
+            newNode->point = neighbors.data[i];
+            newNode->parent = node;
+            newNode->g = node->g + getCost(node->point, newNode->point, map);
+
+            int posOpen, posClose;
+            Node* foundInOpen = findNodeInNodeList(&openList, newNode->point, &posOpen);
+            Node* foundInClose = findNodeInNodeList(&closeList, newNode->point, &posClose);
+            if(!foundInOpen && !foundInClose){
+                pushBackNodeList(&openList, newNode);
+            } else if(foundInOpen && foundInOpen->g > newNode->g){
+                removeNodeAt(&openList, posOpen + 1);
+                pushBackNodeList(&openList, newNode);
+            } else if(foundInClose && foundInClose->g > newNode->g){
+                removeNodeAt(&closeList, posClose + 1);
+                pushBackNodeList(&openList, newNode);
+            } else free(newNode);   
+        }
+        sortNodeListByG(&openList);
+    }
+    return NULL;
+}
+
 IntList getGoalPath(Node *node){
 	IntList path;
 	initIntList(&path);
@@ -354,8 +412,17 @@ OutputStruct *createOutputStruct(IntList pathToGoal, IntList traversalOrder, int
 extern "C" {
 
     EMSCRIPTEN_KEEPALIVE
-    void UCSAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+    OutputStruct *UCSAlgorithm(int* node_arr, int n, int* u_arr, int* v_arr, int* g_arr, int m, int start, int goal){
+        Map map = createMapWithInput(node_arr, n, u_arr, v_arr, g_arr, m);
+        
+        IntList traversalOrder;
+        initIntList(&traversalOrder);
 
+        Node *node = solveGreedy(map, start, goal, &traversalOrder);
+        int cost = node->g;
+
+        IntList path = getGoalPath(node);
+        return createOutputStruct(path, traversalOrder, cost);
     }
     
     EMSCRIPTEN_KEEPALIVE

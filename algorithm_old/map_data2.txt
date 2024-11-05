@@ -1,0 +1,32 @@
+12 18
+A 50
+B 60
+C 75
+D 65
+E 70
+F 80
+G 80
+H 55
+I 45
+J 20
+K 15
+V 0
+A B 5
+A D 7
+A I 10
+A H 15
+B C 20
+C V 100
+D E 17
+D F 30
+D G 90
+H J 15
+H I 10
+I J 15
+F G 15
+F H 10
+F K 80
+G V 90
+J K 25
+K V 15
+A V

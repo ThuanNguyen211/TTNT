@@ -84,7 +84,7 @@ vector<char> get_neighbors(char point, Map map){
 }
 
 // Tìm một node chứa điểm đang xét trong một danh sách các node, lưu lại vị trí tìm thấy
-Node* find_point_in_list(char point, vector<Node*> list, vector<Node*>::iterator *pos){
+Node* find_point_in_list(char point, vector<Node*>& list, vector<Node*>::iterator *pos){
     if(list.size() == 0) return NULL;
 
     vector<Node*>::iterator it = list.begin();
@@ -93,7 +93,7 @@ Node* find_point_in_list(char point, vector<Node*> list, vector<Node*>::iterator
             *pos = it;
             return *it;
         }
-        it = list.erase(it);
+        ++it;
     }
     return NULL;
 }
@@ -122,7 +122,7 @@ Node* UCSAlgorithm(Map map, char start, char goal, vector<char> *traversing_orde
     // Lặp khi open list còn phần tử
     while(!openList.empty()){
 
-        // Lấy node cuối cùng trong open (open được sắp xếp giảm dần theo g)
+        // Lấy node cuối cùng trong open
         Node* node = openList.back();
         // Xóa node này ra khỏi open và đưa vào close
         openList.pop_back();
@@ -137,14 +137,11 @@ Node* UCSAlgorithm(Map map, char start, char goal, vector<char> *traversing_orde
         // Lấy danh sách và duyệt qua các láng giềng
         vector<char> neighbors = get_neighbors(node->point, map);
         for(size_t v = 0; v < neighbors.size(); v++){
-
-            // Tạo node mới với từng láng giềng
             Node* newNode = (Node*)malloc(sizeof(Node));
             newNode->point = neighbors.at(v);
             newNode->parent = node;
             newNode->g = newNode->parent->g + get_cost(newNode->parent->point, newNode->point, map);
 
-            // Kiểm tra sự hiện diện của láng giềng trong open và close
             vector<Node*>::iterator posOpen, posClose;
             Node* nodeFoundOpen = find_point_in_list(newNode->point, openList, &posOpen);
             Node* nodeFoundClose = find_point_in_list(newNode->point, closeList, &posClose);
@@ -163,6 +160,7 @@ Node* UCSAlgorithm(Map map, char start, char goal, vector<char> *traversing_orde
                 closeList.erase(posClose);
                 openList.push_back(newNode);
             }
+            else free(newNode);
 
             // Sắp xếp lại open theo chiều giảm dần của g
             sort(openList.begin(), openList.end(), compare_g);

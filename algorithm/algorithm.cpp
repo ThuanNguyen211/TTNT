@@ -418,7 +418,7 @@ extern "C" {
         IntList traversalOrder;
         initIntList(&traversalOrder);
 
-        Node *node = solveGreedy(map, start, goal, &traversalOrder);
+        Node *node = solveUCS(map, start, goal, &traversalOrder);
         int cost = node->g;
 
         IntList path = getGoalPath(node);

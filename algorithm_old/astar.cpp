@@ -226,6 +226,11 @@ int main(){
 	// Thực hiện giải thuật
 	Node* node = AStarAlgorithm(map, start, goal, &traversing_order);
 	
+	if(node == NULL){
+		printf("Khong tim thay duong di tu %c den %c", start, goal);
+		return 0;
+	}
+	
 	// Hiển thị thứ tự duyệt
 	printf("Traversing Order: ");
 	for(size_t i = 0; i < traversing_order.size() - 1; i++){

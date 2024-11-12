@@ -224,6 +224,11 @@ int main(){
     //Triển khai giải thuật
     Node* node = GreedyAlgorithm(map, start, goal, &traversing_order);
 
+    if(node == NULL){
+		printf("Khong tim thay duong di tu %c den %c", start, goal);
+		return 0;
+	}
+
     //In thứ tự duyệt
     printf("Traversing order: ");
     for(size_t i = 0; i < traversing_order.size() - 1; i++){

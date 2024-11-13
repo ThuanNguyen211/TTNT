@@ -133,11 +133,6 @@ Node* GreedyAlgorithm(Map map, char start, char goal, vector<char> *traversing_o
     root->h = get_heuristic(start, map);
     root->g = 0;
 
-    if(root->h == -1){
-        printf("Heuristic of root is -1");
-        return NULL;
-    }
-
     //Đưa root node vài open
     openList.push_back(root);
 

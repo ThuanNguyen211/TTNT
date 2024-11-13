@@ -10,7 +10,7 @@
         <div class="logo">
             <img src="CTU_logo.png">
         </div>
-        <h2>Trí tuệ nhân tạo - Nhóm 10</h2>
+        <h2>Trí tuệ nhân tạo - Nhóm 04</h2>
         <label class="switch" style="position: absolute; left: 95%;">
             <input type="checkbox" id="themeToggle" onchange="changeTheme(this)"/>
             <span class="slider"></span>
@@ -50,13 +50,16 @@
             <div id="inputform">
                 <div class="edge-title">
                     <div class="title">From</div>
-                    <div class="title">Cost</div>
                     <div class="title">To</div>
+                    <div class="title">Cost</div>
+                    <div class="title"></div>
                 </div>
+
                 <div class="edge">
-                    <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                    <input autocomplete="off" class="input node1" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                    <input autocomplete="off" class="input node2" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
                     <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
-                    <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
+                    <button class="delete-edge-btn" onclick="deleteEdge(this)">-</button>
                 </div>
             </div>
             <button class="add-edge-btn" onclick="addEdgeInput()">+</button>
@@ -79,13 +82,13 @@
         <div id="network-container">
             <div id="network"></div>
             <div id="res" class="input-container">
-                <div id="traversalOrder" class="title">
+                <div id="traversalOrder" class="title res-title">
                     Traversal Order:
                 </div>
-                <div id="pathToGoal" class="title">
+                <div id="pathToGoal" class="title res-title">
                     Path To Goal:
                 </div>
-                <div id="totalCost" class="title">
+                <div id="totalCost" class="title res-title">
                     Total Cost:
                 </div>
             </div>
@@ -101,16 +104,17 @@
 <script src="struct_framework.js"></script>
 <script>
 
-    var map = {};
+    var map = null;
 
     function addEdgeInput() {
         const inputform = document.querySelector('#inputform');
 
         inputform.insertAdjacentHTML('beforeend', `
             <div class="edge">
-                <input autocomplete="off" class="input" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                <input autocomplete="off" class="input node1" type="text" name="node1" placeholder="u" onblur="updateHueristicInput(this)">
+                <input autocomplete="off" class="input node2" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
                 <input autocomplete="off" class="input" type="number" name="weight" placeholder="w">
-                <input autocomplete="off" class="input" type="text" name="node2" placeholder="v" onblur="updateHueristicInput(this)">
+                <button class="delete-edge-btn" onclick="deleteEdge(this)">-</button>
             </div>
         `);
     }
@@ -141,6 +145,11 @@
 
         const output = run(nodes, edges, algorithmOption, start, goal);
         console.log(output);
+
+        if(output.pathToGoalLength == 0){
+            alert(`Không tìm thấy đường đi từ ${getNodeNameById(start)} tới ${getNodeNameById(goal)}`);
+            return;
+        }
 
         const pathToGoalRes = document.querySelector('#pathToGoal');
         const traversalOrderRes = document.querySelector('#traversalOrder');
@@ -211,7 +220,7 @@
     }
 
     function updateSelects() {
-        if(map != {}){
+        if(map != null){
             let nodes = [];
             for(var i = 1; i <= map.nodelist.length; i++){
                 nodes.push(map.nodelist.get(i).name);
@@ -258,7 +267,31 @@
                 hList.appendChild(titleDiv);
 
                 container.insertBefore(hList, inputContainer.nextSibling);
-            }    
+            }
+
+            if(map != null && map.nodelist.get(1).h){
+                const nodeList = map.nodelist.get().map(node => node.name);
+
+                const childElements = document.getElementById("h-list").getElementsByTagName("*");
+                const h_ids = Array.from(childElements)
+                                .filter(element => element.id) 
+                                .map(element => element.id); 
+
+                nodeList.forEach(nodeName => {
+
+                    if(h_ids.includes(`h-${nodeName}`)) return;
+                    
+                    document.querySelector('#h-list').insertAdjacentHTML('beforeend', `
+                        <div class="h">
+                            <p class="title" styles="margin:0px">${nodeName}</p>
+                            <input class="input" type="number" id="h-${nodeName}">
+                        </div>
+                    `);
+                    existingNodes.push(nodeName);
+                });
+            }
+
+
         } else {
             const hList = document.querySelector('#h-list');
             if(hList) {
@@ -275,6 +308,22 @@
         }
     }
 
+    function deleteEdge(button) {
+        const edge = button.parentElement;
+
+        const u = edge.querySelector('.node1').value;
+        const v = edge.querySelector('.node2').value;
+
+        console.log(u);
+        console.log(v);
+        
+        if (document.querySelectorAll('.edge').length > 0) {
+            edge.remove();
+            deleteNode(u);
+            deleteNode(v);
+            draw();
+        }
+    }
 
 </script>
 

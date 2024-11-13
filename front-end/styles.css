@@ -118,14 +118,14 @@ h2{
 }
 
 .title {
-    width: 100%;
+    width: 70%;
     text-align: center;
     font-size: 16px;
 }
 
 .edge , .edge-title{
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
     gap: 10px;
     padding: 5px;
 }
@@ -338,7 +338,6 @@ button:active {
 }
 
 .title {
-    width: 84px;
     text-align: center;
     font-size: 16px;
     font-weight: 500;
@@ -346,4 +345,30 @@ button:active {
     background-color: #fafafa; 
     border-radius: 12px; 
     font-family: monospace;
+    margin: auto;
+}
+
+.res-title {
+    margin: 0;
+    margin-bottom: 2px;
+}
+
+.delete-edge-btn {
+    color: white;
+    background: #ff4444;
+    padding: 0.3em 0.7em;
+    margin-top: 10px;
+    font-size: 12px;
+    border-radius: 10px;
+    width: 40px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 3px 3px 6px #c5c5c5;
+}
+
+.delete-edge-btn:hover {
+    background: #ff0000;
+    border: 1px solid #ff0000;
 }

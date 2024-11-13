@@ -88,7 +88,7 @@ body {
 #network-container {
     position: relative;
     border-radius: 30px;
-    background: #adb5bd;
+    background: #6c757d;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset,
                 rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
 }
@@ -132,9 +132,15 @@ body {
     background-color: #343a40;
 }
 
+.title {
+    width: 70%;
+    text-align: center;
+    font-size: 16px;
+}
+
 .edge , .edge-title{
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
     gap: 10px;
     padding: 5px;
 }
@@ -338,7 +344,7 @@ button:active {
 }
 
 .custom-select:active {
-    box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #ffffff;
+    box-shadow: 4px 4px 12px #c5c5c5;
 }
 
 .runContainer {
@@ -347,12 +353,37 @@ button:active {
 }
 
 .title {
-    width: 84px;
     text-align: center;
     font-size: 16px;
     font-weight: 500;
-    color: rgb(177, 176, 176); 
-    background-color: #343a40;
+    color: #adb5bd; 
     border-radius: 12px; 
     font-family: monospace;
+    margin: auto;
+}
+
+.res-title {
+    margin: 0;
+    margin-bottom: 2px;
+}
+
+.delete-edge-btn {
+    color: white;
+    background: #ff4444;
+    padding: 0.3em 0.7em;
+    margin-top: 10px;
+    font-size: 12px;
+    border: 1px solid #343a40;
+    border-radius: 10px;
+    width: 40px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 6px 6px 12px #343a40, -6px -6px 12px #495057;
+}
+
+.delete-edge-btn:hover {
+    background: #ff0000;
+    border: 1px solid #ff0000;
 }
